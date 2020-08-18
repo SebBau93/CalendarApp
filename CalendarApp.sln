@@ -3,11 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30320.27
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalendarApp", "CalendarApp\CalendarApp.csproj", "{7FC55EE4-C4D6-43E6-A28E-C5BD62450E88}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CalendarApp", "CalendarApp\CalendarApp.csproj", "{7FC55EE4-C4D6-43E6-A28E-C5BD62450E88}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalendarApp.Application", "CalendarApp.Application\CalendarApp.Application.csproj", "{BFE94235-2FEA-424A-ACAC-9885B7914D4B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CalendarApp.Application", "CalendarApp.Application\CalendarApp.Application.csproj", "{BFE94235-2FEA-424A-ACAC-9885B7914D4B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalendarApp.Domain", "CalendarApp.Domain\CalendarApp.Domain.csproj", "{16F1DF33-49F1-4434-9ED3-6A4D572C8C01}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CalendarApp.Domain", "CalendarApp.Domain\CalendarApp.Domain.csproj", "{16F1DF33-49F1-4434-9ED3-6A4D572C8C01}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalendarApp.Tests", "CalendarApp.Tests\CalendarApp.Tests.csproj", "{AFB5DF10-7CE4-4102-9FB3-3827564CD756}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{16F1DF33-49F1-4434-9ED3-6A4D572C8C01}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{16F1DF33-49F1-4434-9ED3-6A4D572C8C01}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{16F1DF33-49F1-4434-9ED3-6A4D572C8C01}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AFB5DF10-7CE4-4102-9FB3-3827564CD756}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFB5DF10-7CE4-4102-9FB3-3827564CD756}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFB5DF10-7CE4-4102-9FB3-3827564CD756}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFB5DF10-7CE4-4102-9FB3-3827564CD756}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

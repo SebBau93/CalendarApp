@@ -88,7 +88,7 @@ namespace CalendarApp.Application.Services
 
             if (!String.IsNullOrEmpty(reminderDto.ReminderPeriodicity))
             {
-                bool isEnum = Enum.TryParse(reminderDto.ReminderPeriodicity, out RemindersPeriodicity enumValue);
+                bool isEnum = Enum.IsDefined(typeof(RemindersPeriodicity), reminderDto.ReminderPeriodicity);
 
                 if (!isEnum)
                     return new Tuple<bool, string>(false, "Invalid Reminder Periodicity value");
