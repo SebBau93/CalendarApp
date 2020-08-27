@@ -15,7 +15,9 @@ namespace CalendarApp.Application.Interfaces
 
         Reminder GetDetails(int id);
 
-        (bool isAdded, string message, Reminder reminder, int countAddedReminders) Add(ReminderDto reminder);
+        (bool isAdded, string message, Reminder reminder, int countAddedReminders) Add(ReminderDto reminderDto);
+
+        (int countRemindersAddedCorrectly, int countRemindersBasedPeriodicity, int countInvalidReminders, IEnumerable<ReminderDto> invalidReminders) AddReminders(IEnumerable<ReminderDto> reminderDtos);
 
         bool Delete(int id);
     }

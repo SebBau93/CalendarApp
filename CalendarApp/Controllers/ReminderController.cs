@@ -1,13 +1,18 @@
 ﻿using CalendarApp.Application.DTO;
 using CalendarApp.Application.Interfaces;
+using CalendarApp.Application.Services;
 using CalendarApp.Domain.Constants;
 using CalendarApp.Domain.Entities;
 using CalendarApp.Utilities;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace CalendarApp.Controllers
 {
@@ -15,11 +20,13 @@ namespace CalendarApp.Controllers
     {
         private readonly IReminderService _reminderService;
         private readonly IMenuActionService _menuActionService;
+        private readonly IFileService<Reminder> _fileService;
 
         public ReminderController(IReminderService reminderService, IMenuActionService menuActionService)
         {
             _reminderService = reminderService;
             _menuActionService = menuActionService;
+            _fileService = new FileService<Reminder>();
         }
 
         public void Index()
@@ -63,6 +70,11 @@ namespace CalendarApp.Controllers
                         Delete();
                         break;
                     case 6:
+                        Console.Clear();
+                        TemporaryVariables.ClearSelectedActionValue();
+                        AddRemindersFromFile();
+                        break;
+                    case 7:
                         TemporaryVariables.ClearSelectedActionValue();
                         return;
                     case 100:
@@ -319,9 +331,87 @@ namespace CalendarApp.Controllers
 
             Console.Clear();
 
-            ConsoleUtilities.ShowMessage($"Reminder with Id: {id} doesn't exist", "Returning to Reminder Menu...", GlobalVariables.GlobalThreadSleepMiliseconds);
-            return;
+            ConsoleUtilities.ShowMessage($"Reminder with Id: {id} was deleted", "Returning to Reminder Menu...", GlobalVariables.GlobalThreadSleepMiliseconds);
 
+            return;
+        }
+
+        public async Task AddRemindersFromFile()
+        {
+            try
+            {
+                Console.WriteLine("Enter path file:");
+
+                string filePath = Console.ReadLine();
+
+                Console.WriteLine();
+
+                Console.WriteLine("Enter type of data in file:");
+                Console.WriteLine("1. XML");
+                Console.WriteLine("2. JSON");
+                Console.WriteLine("3. CSV");
+
+                bool isInt = Int32.TryParse(Console.ReadKey().KeyChar.ToString(), out int dataTypeInt);
+
+                Console.Clear();
+
+                if (!isInt || dataTypeInt > 3)
+                {
+                    ConsoleUtilities.ShowMessage("Invalid data type", "Returning to Reminder Menu...", GlobalVariables.GlobalThreadSleepMiliseconds);
+                    return;
+                }
+
+                IEnumerable<ReminderDto> reminderDtos = dataTypeInt switch
+                {
+                    1 => _fileService.DeserializeDataFromXmlFileToIEnumerableOfDtos<ReminderDto>(filePath),
+                    2 => await _fileService.DeserializeDataFromJsonFileToIEnumerableOfDtos<ReminderDto>(filePath),
+                    3 => await _fileService.DeserializeDataFromCsvFileToIEnumerableOfDtos<ReminderDto>(filePath)
+                };
+
+                (int, int, int, IEnumerable<ReminderDto>) addReminders = _reminderService.AddReminders(reminderDtos);
+
+                if (addReminders.Item1 > 0)
+                {
+                    Console.WriteLine($"{addReminders.Item1} reminders were added correclty.");
+                }
+                if (addReminders.Item2 > 0)
+                {
+                    Console.WriteLine($"{addReminders.Item2} reminders were added based on periodicity given in main reminders");
+                }
+                if (addReminders.Item3 > 0)
+                {
+                    Console.WriteLine($"{addReminders.Item3} reminders were invalid");
+                    Console.WriteLine("List of invalid reminders (by Title):");
+
+                    int counter = 1;
+
+                    foreach (ReminderDto reminder in addReminders.Item4)
+                        Console.WriteLine($"{counter}. {reminder.Title}");
+                }
+
+                Console.WriteLine();
+                Console.WriteLine("Press any key to return to Reminders menu.");
+
+                Console.ReadKey();
+
+                return;
+            }
+            catch (Exception exception)
+            {
+                if (
+                    exception is ArgumentOutOfRangeException || 
+                    exception is FileNotFoundException || 
+                    exception is InvalidOperationException ||
+                    exception is JsonReaderException                 
+                    )
+                {
+                    ConsoleUtilities.ShowMessage(exception.Message, "Returning to Reminder Menu...", GlobalVariables.GlobalThreadSleepMiliseconds);
+                    return;
+                }
+
+                ConsoleUtilities.ShowMessage("Something gone wrong", "Returning to Reminder Menu...", GlobalVariables.GlobalThreadSleepMiliseconds);
+                return;
+            }
         }
     }
 }

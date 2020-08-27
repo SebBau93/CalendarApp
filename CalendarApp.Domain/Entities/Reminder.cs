@@ -1,5 +1,6 @@
 ﻿using CalendarApp.Domain.Enums;
 using System;
+using System.Xml.Serialization;
 
 namespace CalendarApp.Domain.Entities
 {

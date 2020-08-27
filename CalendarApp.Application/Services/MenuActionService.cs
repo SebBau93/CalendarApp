@@ -35,7 +35,8 @@ namespace CalendarApp.Application.Services
             _menuActions.Add(new MenuAction { Id = 3, Name = "Reminder details", Type = MenuActionTypes.Reminder });
             _menuActions.Add(new MenuAction { Id = 4, Name = "Add new reminder", Type = MenuActionTypes.Reminder });
             _menuActions.Add(new MenuAction { Id = 5, Name = "Delete reminder", Type = MenuActionTypes.Reminder });
-            _menuActions.Add(new MenuAction { Id = 6, Name = "Main menu", Type = MenuActionTypes.Reminder });
+            _menuActions.Add(new MenuAction { Id = 6, Name = "Add reminders from file", Type = MenuActionTypes.Reminder });
+            _menuActions.Add(new MenuAction { Id = 7, Name = "Main menu", Type = MenuActionTypes.Reminder });
 
             _menuActions.Add(new MenuAction { Id = 1, Name = "Calendar", Type = MenuActionTypes.CalendarMonth });
             _menuActions.Add(new MenuAction { Id = 2, Name = "Reminders for a selected month", Type = MenuActionTypes.CalendarMonth });

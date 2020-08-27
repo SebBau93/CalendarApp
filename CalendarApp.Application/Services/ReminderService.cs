@@ -39,7 +39,7 @@ namespace CalendarApp.Application.Services
 
         public (bool isAdded, string message, Reminder reminder, int countAddedReminders) Add(ReminderDto reminderDto)
         {
-            Tuple<bool, string> validate = ValidateReminderDto(reminderDto);
+            (bool, string) validate = ValidateReminderDto(reminderDto);
 
             if (validate.Item1 == false)
             {
@@ -67,6 +67,32 @@ namespace CalendarApp.Application.Services
             return (true, String.Empty, reminder, countAddedReminders);
         }
 
+        public (int countRemindersAddedCorrectly, int countRemindersBasedPeriodicity, int countInvalidReminders, IEnumerable<ReminderDto> invalidReminders) AddReminders(IEnumerable<ReminderDto> reminderDtos)
+        {
+            int countRemindersAddedCorrectly = 0;
+            int countRemindersBasedPeriodicity = 0;
+            int countInvalidReminders = 0;
+            List<ReminderDto> invalidReminders = new List<ReminderDto>();
+
+            foreach (ReminderDto reminder in reminderDtos)
+            {
+                (bool, string, Reminder, int) addReminder = Add(reminder);
+
+                if (addReminder.Item1 == true)
+                {
+                    countRemindersAddedCorrectly += 1;
+                    countRemindersBasedPeriodicity += addReminder.Item4;
+                }
+                else
+                {
+                    countInvalidReminders += 1;
+                    invalidReminders.Add(reminder);
+                }                 
+            }
+
+            return (countRemindersAddedCorrectly, countRemindersBasedPeriodicity, countInvalidReminders, invalidReminders);
+        }
+
         public bool Delete(int id)
         {
             Reminder reminder = _reminders.FirstOrDefault(r => r.Id == id);
@@ -79,28 +105,29 @@ namespace CalendarApp.Application.Services
             return true;
         }
 
-        private Tuple<bool, string> ValidateReminderDto(ReminderDto reminderDto)
+        private (bool isValid, string validationErrorMessage) ValidateReminderDto(ReminderDto reminderDto)
         {
+            if (String.IsNullOrEmpty(reminderDto.Title))
+                return (false, "Title cannot be empty");
+
             bool isDateTime = DateTime.TryParse(reminderDto.ReminderDate, out DateTime dateTime);
 
             if (!isDateTime)
-                return new Tuple<bool, string>(false, "Invalid Reminder Date value");
+                return (false, "Invalid Reminder Date value");
 
             if (!String.IsNullOrEmpty(reminderDto.ReminderPeriodicity))
             {
-                bool isEnum = Enum.IsDefined(typeof(RemindersPeriodicity), reminderDto.ReminderPeriodicity);
+                bool isEnum = Enum.TryParse(reminderDto.ReminderPeriodicity, out RemindersPeriodicity enumValue);
 
                 if (!isEnum)
-                    return new Tuple<bool, string>(false, "Invalid Reminder Periodicity value");
+                    return (false, "Invalid Reminder Periodicity value");
             }
 
-            return new Tuple<bool, string>(true, String.Empty);
+            return (true, String.Empty);
         }
 
         private int CreateNewRemindersFromPeriodicity(RemindersPeriodicity periodicity, Reminder reminder)
         {
-
-
             int countAddedReminders = periodicity switch
             {
                 RemindersPeriodicity.Daily => CreateNewRemindersForDailyPeriodicity(reminder),
